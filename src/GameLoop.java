@@ -1,5 +1,8 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.GridLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GameLoop extends JFrame {
@@ -62,8 +65,6 @@ public class GameLoop extends JFrame {
          double now = System.nanoTime();
          int updateCount = 0;
          
-
-         //Do as many game updates as we need to, potentially playing catchup.
             while( now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER )
             {
                updateGame();

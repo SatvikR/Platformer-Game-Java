@@ -1,12 +1,16 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 	
 	final String dir = System.getProperty("user.dir");
-	
 	Toolkit t = Toolkit.getDefaultToolkit();
 	
 	Image idle = t.getImage(dir + "/../images/adventurer-idle-00.png");
@@ -25,6 +29,7 @@ public class GamePanel extends JPanel {
 	   
 	public void update() {
 		player.update();
+		player.update_collider();
 	}
 	   
 	public void paintComponent(Graphics g) {			
@@ -33,23 +38,19 @@ public class GamePanel extends JPanel {
 		g.drawImage(background, 0, 0, this);
 		g.drawImage(middleground, 0, 0, this);
 		
-		g.drawImage(player.img, player.x, player.y, this);
-		  
-		 
+		player.draw(g, this);
+		
+		g.setColor(Color.RED);
+		g.drawRect(player.collider.rect.x, player.collider.rect.y, player.collider.rect.width, player.collider.rect.height);
+		
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Consolas", Font.BOLD, 20));
-		g.drawString("FPS: " + GameLoop.fps, 5, 25);
+		// g.drawString("FPS: " + GameLoop.fps, 5, 25);
 		      
 		GameLoop.frameCount++;
 	}
 	
 	public class KeyboardListener implements KeyListener {
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -90,5 +91,8 @@ public class GamePanel extends JPanel {
 				player.sprinting = false;
 			}
 		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {}
 	}
 }
