@@ -10,31 +10,39 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 	
-	final String dir = System.getProperty("user.dir");
-	Toolkit t = Toolkit.getDefaultToolkit();
 	
-	Image idle = t.getImage(dir + "/../images/adventurer-idle-00.png");
+	
+	public Player player = new Player(100, 500);
+	private boolean first_render;
+	int playerWidth, playerHeight;
+	Toolkit t = Toolkit.getDefaultToolkit();
+	final String dir = System.getProperty("user.dir");
 	Image background = t.getImage(dir + "/../images/background.png");
 	Image middleground = t.getImage(dir + "/../images/middleground.png");
 	
-	public Player player = new Player(100, 500, idle);
-	int playerWidth, playerHeight;
-	   
+	public static int frame = 0;
+	
 	public GamePanel() {
 		playerWidth = playerHeight = 50;
 		KeyListener listener = new KeyboardListener();
 		addKeyListener(listener);
 		setFocusable(true);
+		first_render = true;
 	}
 	   
 	public void update() {
 		player.update();
 		player.update_collider();
+		frame += 1;
 	}
 	   
 	public void paintComponent(Graphics g) {			
 		super.paintComponent(g);
-		
+		if (first_render) {
+			render_all(g, player);
+			first_render = !first_render;
+			return;
+		}
 		g.drawImage(background, 0, 0, this);
 		g.drawImage(middleground, 0, 0, this);
 		
@@ -46,8 +54,18 @@ public class GamePanel extends JPanel {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Consolas", Font.BOLD, 20));
 		// g.drawString("FPS: " + GameLoop.fps, 5, 25);
-		      
+		
 		GameLoop.frameCount++;
+	}
+	
+	public void render_all(Graphics g, Player p) {
+		for (Image i : p.state_imgs.get("idle")) {
+			g.drawImage(i, 0, 0, this);
+		}
+		for (Image i : p.state_imgs.get("jump")) {
+			g.drawImage(i, 0, 0, this);
+		}
+			
 	}
 	
 	public class KeyboardListener implements KeyListener {
@@ -57,7 +75,7 @@ public class GamePanel extends JPanel {
 			int key = e.getKeyCode();
 			
 			if (key == KeyEvent.VK_SPACE && !player.jumping) {
-				player.jumping = true;
+				player.state = "jump";
 			}
 			
 			if (key == KeyEvent.VK_A) {

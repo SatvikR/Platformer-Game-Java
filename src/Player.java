@@ -1,33 +1,52 @@
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 public class Player{
-	public int x;
-	public int y;
-	public Image img;
-	public boolean a;
-	public boolean d;
+	public int x, y;
+	public boolean a, d;
 	public double[] jump_list;
-	public boolean jumping;
-	public boolean sprinting;
+	public boolean jumping, sprinting;
 	public PhysicsCollider collider;
-	private int jump_index;
+	private int jump_index, img_index;
 	private int orig_y;
+	public String state, prev_state;
+	public Hashtable<String, Image[]> state_imgs;
 
-	public Player(int x, int y, Image i) {
+	public Player(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.orig_y = this.y;
-		this.img = i;
 		this.a = false;
 		this.d = false;
 		this.jump_list = create_jump();
-		this.jumping = false;
 		this.jump_index = 0;
 		this.sprinting = false;
+		this.img_index = 0;
+		this.state = "idle";
 		this.collider = new PhysicsCollider(new Rectangle(this.x + 79, this.y + 45, 87, 138));
+		this.prev_state = "idle";
+		
+		Toolkit t = Toolkit.getDefaultToolkit();
+		final String dir = System.getProperty("user.dir");
+		
+		Image idle_one = t.getImage(dir + "/../images/adventurer-idle-00.png");
+		Image idle_two = t.getImage(dir + "/../images/adventurer-idle-01.png");
+		Image idle_three = t.getImage(dir + "/../images/adventurer-idle-02.png");
+		Image jump_one = t.getImage(dir + "/../images/adventurer-jump-00.png");
+		Image jump_two = t.getImage(dir + "/../images/adventurer-jump-01.png");
+		Image jump_three = t.getImage(dir + "/../images/adventurer-jump-02.png");
+		
+		Image[] idle_imgs = {idle_one, idle_two, idle_three};
+		Image[] jump_imgs = {jump_two, jump_three, jump_one};
+		
+		this.state_imgs = new Hashtable<String, Image[]>();
+		
+		this.state_imgs.put("idle", idle_imgs);
+		this.state_imgs.put("jump", jump_imgs);
 	}
 
 	public void update() {
@@ -53,11 +72,12 @@ public class Player{
 			}
 		}
 		
-		if (this.jumping) {
+		if (this.state == "jump") {
 			if (this.jump_index == this.jump_list.length) {
-				this.jumping = false;
+				this.state = "idle";
 				this.y = this.orig_y;
 				this.jump_index = 0;
+				System.out.println(this.jump_list.length);
 			}
 			else {
 				this.y = this.orig_y - (int) this.jump_list[this.jump_index];
@@ -84,7 +104,25 @@ public class Player{
 	}
 	
 	public void draw(Graphics g, GamePanel p) {
-		g.drawImage(this.img, this.x, this.y, p);
+		if (GamePanel.frame == 7) {
+			this.img_index += 1;
+			GamePanel.frame = 0;
+		}
+		
+		if (this.a) {
+			int width = this.state_imgs.get(this.state)[this.img_index % 3].getWidth(p);
+			int height = this.state_imgs.get(this.state)[this.img_index % 3].getHeight(p);
+			
+			if (this.prev_state == "jump" && this.state == "idle") {
+				this.img_index = 0;
+			}
+			
+			g.drawImage(this.state_imgs.get(this.state)[this.img_index % 3], this.x + width, this.y, -width, height, null);
+			this.prev_state = this.state;
+		}
+		else {
+			g.drawImage(this.state_imgs.get(this.state)[this.img_index % 3], this.x, this.y, p);
+		}
 	}
 	
 	public void update_collider() {
