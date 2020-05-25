@@ -12,8 +12,7 @@ public class GameLoop extends JFrame {
    public static final int WIDTH = 1200;
    public static final int HEIGHT = 800;
    
-   public GameLoop()
-   {
+   public GameLoop() {
       super("Platformer Game");
       Container cp = getContentPane();
       cp.setLayout(new BorderLayout());
@@ -28,12 +27,9 @@ public class GameLoop extends JFrame {
    
    
    //Starts a new thread and runs the game loop in it.
-   public void runGameLoop()
-   {
-      Thread loop = new Thread()
-      {
-         public void run()
-         {
+   public void runGameLoop() {
+      Thread loop = new Thread() {
+         public void run() {
             gameLoop();
          }
       };
@@ -41,8 +37,7 @@ public class GameLoop extends JFrame {
    }
    
    //Only run this in another Thread!
-   private void gameLoop()
-   {
+   private void gameLoop() {
 
       final double GAME_HERTZ = 30.0;
       final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
@@ -60,8 +55,7 @@ public class GameLoop extends JFrame {
       //Simple way of finding FPS.
       int lastSecondTime = (int) (lastUpdateTime / 1000000000);
       
-      while (true)
-      {
+      while (true) {
          double now = System.nanoTime();
          int updateCount = 0;
          
@@ -73,16 +67,14 @@ public class GameLoop extends JFrame {
             }
    
 
-        if ( now - lastUpdateTime > TIME_BETWEEN_UPDATES)
-        {
+        if ( now - lastUpdateTime > TIME_BETWEEN_UPDATES) {
            lastUpdateTime = now - TIME_BETWEEN_UPDATES;
         }
      
         drawGame();
         //Update the frames we got.
         int thisSecond = (int) (lastUpdateTime / 1000000000);
-        if (thisSecond > lastSecondTime)
-        {
+        if (thisSecond > lastSecondTime) {
            //System.out.println("NEW SECOND " + thisSecond + " " + frameCount);
            fps = frameCount;
            frameCount = 0;
@@ -90,8 +82,7 @@ public class GameLoop extends JFrame {
         }
      
 
-        while ( now - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS && now - lastUpdateTime < TIME_BETWEEN_UPDATES)
-        {
+        while ( now - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS && now - lastUpdateTime < TIME_BETWEEN_UPDATES) {
            Thread.yield();
         
 
@@ -102,13 +93,11 @@ public class GameLoop extends JFrame {
       }
    }
    
-   private void updateGame()
-   {
+   private void updateGame() {
       gamePanel.update();
    }
    
-   private void drawGame()
-   {  
+   private void drawGame() {  
       gamePanel.repaint();
    }
 }

@@ -8,14 +8,14 @@ import java.util.Hashtable;
 public class Player{
 	public int x, y;
 	public boolean a, d;
-	public double[] jump_list;
+	public double[] jump_list, drop_list;
 	public boolean jumping, sprinting;
 	public PhysicsCollider collider;
 	private int jump_index, img_index;
 	private int orig_y;
 	public String state, prev_state;
 	public Hashtable<String, Image[]> state_imgs;
-
+	
 	public Player(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -23,6 +23,7 @@ public class Player{
 		this.a = false;
 		this.d = false;
 		this.jump_list = create_jump();
+		this.drop_list = create_grav();
 		this.jump_index = 0;
 		this.sprinting = false;
 		this.img_index = 0;
@@ -94,7 +95,7 @@ public class Player{
         float x = 0;
         double y = 0;
 
-        while(y >= 0) {
+        while(y >= 0 && x < 10) {
             jump_list = Arrays.copyOf(jump_list, jump_list.length + 1);
             jump_list[jump_list.length - 1] = y;
             x += 1.0;
@@ -103,6 +104,19 @@ public class Player{
         return jump_list;
 	}
 	
+	public double[] create_grav() {
+		double[] grav_list = new double[0];
+		float x = 9;
+		double y = 800;
+		while (y >= 0) {
+			grav_list = Arrays.copyOf(grav_list, grav_list.length + 1);
+			grav_list[grav_list.length - 1] = 800 - y;
+			x += 1.0;
+			y = -2 * Math.pow(x, 2) + (36 * x) + 638;
+		}
+		return grav_list;
+	}
+
 	public void draw(Graphics g, GamePanel p) {
 		if (GamePanel.frame == 7) {
 			this.img_index += 1;

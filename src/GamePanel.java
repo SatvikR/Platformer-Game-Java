@@ -5,13 +5,13 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import javax.swing.JPanel;
+import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
-	
-	
-	
+	public ArrayList<Block> terrain = new ArrayList<Block>();
 	public Player player = new Player(100, 500);
 	private boolean first_render;
 	int playerWidth, playerHeight;
@@ -19,7 +19,8 @@ public class GamePanel extends JPanel {
 	final String dir = System.getProperty("user.dir");
 	Image background = t.getImage(dir + "/../images/background.png");
 	Image middleground = t.getImage(dir + "/../images/middleground.png");
-	
+	Image base_block = t.getImage(dir + "/../images/base_platform.png");
+	public Block base = new Block(base_block, 0, 600, new PhysicsCollider(new Rectangle(0, 525, 400, 65)));
 	public static int frame = 0;
 	
 	public GamePanel() {
@@ -28,6 +29,7 @@ public class GamePanel extends JPanel {
 		addKeyListener(listener);
 		setFocusable(true);
 		first_render = true;
+		terrain.add(base);
 	}
 	   
 	public void update() {
@@ -39,14 +41,22 @@ public class GamePanel extends JPanel {
 	public void paintComponent(Graphics g) {			
 		super.paintComponent(g);
 		if (first_render) {
-			render_all(g, player);
+			render_all(g, player, terrain);
 			first_render = !first_render;
 			return;
 		}
+
+
 		g.drawImage(background, 0, 0, this);
 		g.drawImage(middleground, 0, 0, this);
-		
+
 		player.draw(g, this);
+
+		for (Block b : terrain) {
+			g.drawImage(b.img, b.x, b.y, this);
+			g.setColor(Color.RED);
+			g.drawRect(b.collider.rect.x, b.collider.rect.y, b.collider.rect.width, b.collider.rect.height);
+		}
 		
 		g.setColor(Color.RED);
 		g.drawRect(player.collider.rect.x, player.collider.rect.y, player.collider.rect.width, player.collider.rect.height);
@@ -54,18 +64,22 @@ public class GamePanel extends JPanel {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Consolas", Font.BOLD, 20));
 		// g.drawString("FPS: " + GameLoop.fps, 5, 25);
-		
 		GameLoop.frameCount++;
 	}
 	
-	public void render_all(Graphics g, Player p) {
+	private void render_all(Graphics g, Player player2, ArrayList<Block> terrain2) {
+	}
+
+	public void render_all(Graphics g, Player p, Block[] blocks) {
 		for (Image i : p.state_imgs.get("idle")) {
 			g.drawImage(i, 0, 0, this);
 		}
 		for (Image i : p.state_imgs.get("jump")) {
 			g.drawImage(i, 0, 0, this);
 		}
-			
+		for (Block b : blocks) {
+			b.draw(g, this);
+		}
 	}
 	
 	public class KeyboardListener implements KeyListener {
