@@ -8,11 +8,13 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import java.awt.Rectangle;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
-	public ArrayList<Block> terrain = new ArrayList<Block>();
-	public Player player = new Player(100, 500);
+	public static ArrayList<Block> terrain = new ArrayList<Block>();
+	public static ArrayList<ArrayList<Integer>> starting_points = new ArrayList<>();
+	public Player player;
 	private boolean first_render;
 	int playerWidth, playerHeight;
 	Toolkit t = Toolkit.getDefaultToolkit();
@@ -20,7 +22,8 @@ public class GamePanel extends JPanel {
 	Image background = t.getImage(dir + "/../images/background.png");
 	Image middleground = t.getImage(dir + "/../images/middleground.png");
 	Image base_block = t.getImage(dir + "/../images/base_platform.png");
-	public Block base = new Block(base_block, 0, 600, new PhysicsCollider(new Rectangle(0, 525, 400, 65)));
+	public Block base = new Block(base_block, 0, 683, new PhysicsCollider(new Rectangle(0, 683, 400, 65)));
+	public Block test_plat = new Block(base_block, 500, 625, new PhysicsCollider(new Rectangle(500, 625, 400, 65)));
 	public static int frame = 0;
 	
 	public GamePanel() {
@@ -30,6 +33,9 @@ public class GamePanel extends JPanel {
 		setFocusable(true);
 		first_render = true;
 		terrain.add(base);
+		terrain.add(test_plat);
+		starting_points.add(new ArrayList<>(Arrays.asList(100, 100)));
+		player = new Player(starting_points.get(0).get(0), starting_points.get(0).get(1));
 	}
 	   
 	public void update() {
@@ -67,10 +73,10 @@ public class GamePanel extends JPanel {
 		GameLoop.frameCount++;
 	}
 	
-	private void render_all(Graphics g, Player player2, ArrayList<Block> terrain2) {
-	}
+	//private void render_all(Graphics g, Player player2, ArrayList<Block> terrain2) {
+	//}
 
-	public void render_all(Graphics g, Player p, Block[] blocks) {
+	public void render_all(Graphics g, Player p, ArrayList<Block> blocks) {
 		for (Image i : p.state_imgs.get("idle")) {
 			g.drawImage(i, 0, 0, this);
 		}

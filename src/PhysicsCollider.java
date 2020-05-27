@@ -10,8 +10,12 @@ public class PhysicsCollider {
 	public boolean check_lower(PhysicsCollider p) {
 		int player_target = this.rect.y + this.rect.height;
 		int block_target = p.rect.y;
-		
-		return player_target >= block_target || player_target >= GameLoop.HEIGHT;
+		int player_x = this.rect.x;
+		int block_x = p.rect.x;
+		int player_mid = (int) (player_x + (this.rect.width * 0.7));
+		int block_r = block_x + p.rect.width;
+
+		return block_target <= player_target && player_target <= block_target + 50 && block_x <= player_mid && player_mid <= block_r;
 	}
 	
 	public boolean check_upper(PhysicsCollider p) {

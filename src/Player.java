@@ -11,9 +11,9 @@ public class Player{
 	public double[] jump_list, drop_list;
 	public boolean jumping, sprinting;
 	public PhysicsCollider collider;
-	private int jump_index, img_index;
+	private int jump_index, img_index, grav_index;
 	private int orig_y;
-	public String state, prev_state;
+	public String state;
 	public Hashtable<String, Image[]> state_imgs;
 	
 	public Player(int x, int y) {
@@ -27,22 +27,20 @@ public class Player{
 		this.jump_index = 0;
 		this.sprinting = false;
 		this.img_index = 0;
+		this.grav_index = 0;
 		this.state = "idle";
 		this.collider = new PhysicsCollider(new Rectangle(this.x + 79, this.y + 45, 87, 138));
-		this.prev_state = "idle";
-		
+
 		Toolkit t = Toolkit.getDefaultToolkit();
 		final String dir = System.getProperty("user.dir");
 		
 		Image idle_one = t.getImage(dir + "/../images/adventurer-idle-00.png");
 		Image idle_two = t.getImage(dir + "/../images/adventurer-idle-01.png");
 		Image idle_three = t.getImage(dir + "/../images/adventurer-idle-02.png");
-		Image jump_one = t.getImage(dir + "/../images/adventurer-jump-00.png");
-		Image jump_two = t.getImage(dir + "/../images/adventurer-jump-01.png");
 		Image jump_three = t.getImage(dir + "/../images/adventurer-jump-02.png");
 		
 		Image[] idle_imgs = {idle_one, idle_two, idle_three};
-		Image[] jump_imgs = {jump_two, jump_three, jump_one};
+		Image[] jump_imgs = {jump_three};
 		
 		this.state_imgs = new Hashtable<String, Image[]>();
 		
@@ -74,22 +72,44 @@ public class Player{
 		}
 		
 		if (this.state == "jump") {
-			if (this.jump_index == this.jump_list.length) {
+			if (this.grav_index != 0) {
 				this.state = "idle";
-				this.y = this.orig_y;
-				this.jump_index = 0;
-				System.out.println(this.jump_list.length);
-			}
-			else {
-				this.y = this.orig_y - (int) this.jump_list[this.jump_index];
-				this.jump_index++;	
+			} else {
+				if (this.jump_index == this.jump_list.length) {
+					this.state = "idle";
+					this.jump_index = 0;
+				} else {
+					this.y = this.orig_y - (int) this.jump_list[this.jump_index];
+					this.jump_index++;
+				}
 			}
 		}
-		else {
-			this.orig_y = this.y;
+		if (this.state == "idle") {
+			boolean touching = false;
+			for (Block b : GamePanel.terrain) {
+				if (this.collider.check_lower(b.collider)) {
+					touching = true;
+					if (this.grav_index != 0) {
+						this.grav_index = 0;
+					}
+					this.y = b.collider.rect.y - this.collider.rect.height - 40;
+					this.orig_y = this.y;
+				}
+			}
+			if (this.grav_index == drop_list.length - 1) {
+				this.grav_index = 0;
+				this.x = GamePanel.starting_points.get(0).get(0);
+				this.y = GamePanel.starting_points.get(0).get(1);
+				this.orig_y = this.y;
+			}
+			if (!touching) {
+				this.grav_index += 1;
+				this.y += drop_list[this.grav_index];
+				this.orig_y = this.y;
+			}
 		}
 	}
-	
+
 	private double[] create_jump() {
         double[] jump_list = new double[0];
         float x = 0;
@@ -111,7 +131,7 @@ public class Player{
 		while (y >= 0) {
 			grav_list = Arrays.copyOf(grav_list, grav_list.length + 1);
 			grav_list[grav_list.length - 1] = 800 - y;
-			x += 1.0;
+			x += 0.5;
 			y = -2 * Math.pow(x, 2) + (36 * x) + 638;
 		}
 		return grav_list;
@@ -122,20 +142,24 @@ public class Player{
 			this.img_index += 1;
 			GamePanel.frame = 0;
 		}
-		
-		if (this.a) {
-			int width = this.state_imgs.get(this.state)[this.img_index % 3].getWidth(p);
-			int height = this.state_imgs.get(this.state)[this.img_index % 3].getHeight(p);
-			
-			if (this.prev_state == "jump" && this.state == "idle") {
-				this.img_index = 0;
+		if (this.state == "jump") {
+			if (this.a) {
+				int width = this.state_imgs.get("jump")[0].getWidth(p);
+				int height = this.state_imgs.get("jump")[0].getHeight(p);
+
+				g.drawImage(this.state_imgs.get("jump")[0], this.x + width, this.y, -width, height, null);
+			} else {
+				g.drawImage(this.state_imgs.get("jump")[0], this.x, this.y, p);
 			}
-			
-			g.drawImage(this.state_imgs.get(this.state)[this.img_index % 3], this.x + width, this.y, -width, height, null);
-			this.prev_state = this.state;
-		}
-		else {
-			g.drawImage(this.state_imgs.get(this.state)[this.img_index % 3], this.x, this.y, p);
+		} else if (this.state == "idle"){
+			if (this.a) {
+				int width = this.state_imgs.get(this.state)[this.img_index % 3].getWidth(p);
+				int height = this.state_imgs.get(this.state)[this.img_index % 3].getHeight(p);
+
+				g.drawImage(this.state_imgs.get(this.state)[this.img_index % 3], this.x + width, this.y, -width, height, null);
+			} else {
+				g.drawImage(this.state_imgs.get(this.state)[this.img_index % 3], this.x, this.y, p);
+			}
 		}
 	}
 	
