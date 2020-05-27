@@ -15,7 +15,7 @@ public class Player{
 	private int orig_y;
 	public String state;
 	public Hashtable<String, Image[]> state_imgs;
-	
+
 	public Player(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -30,21 +30,21 @@ public class Player{
 		this.grav_index = 0;
 		this.state = "idle";
 		this.collider = new PhysicsCollider(new Rectangle(this.x + 79, this.y + 45, 87, 138));
-
+		
 		Toolkit t = Toolkit.getDefaultToolkit();
 
 		final String dir = System.getProperty("user.dir");
-		
+
 		Image idle_one = t.getImage(dir + "/../images/adventurer-idle-00.png");
 		Image idle_two = t.getImage(dir + "/../images/adventurer-idle-01.png");
 		Image idle_three = t.getImage(dir + "/../images/adventurer-idle-02.png");
 		Image jump_three = t.getImage(dir + "/../images/adventurer-jump-02.png");
-		
+
 		Image[] idle_imgs = {idle_one, idle_two, idle_three};
 		Image[] jump_imgs = {jump_three};
-		
+
 		this.state_imgs = new Hashtable<String, Image[]>();
-		
+
 		this.state_imgs.put("idle", idle_imgs);
 		this.state_imgs.put("jump", jump_imgs);
 	}
@@ -59,8 +59,8 @@ public class Player{
 					this.x -= 6;
 				}
 			}
-		}	
-		
+		}
+
 		if (this.d) {
 			if (!this.collider.check_right_boundary()) {
 				if (this.sprinting) {
@@ -71,7 +71,7 @@ public class Player{
 				}
 			}
 		}
-		
+
 		if (this.state == "jump") {
 			if (this.grav_index != 0) {
 				this.state = "idle";
@@ -128,7 +128,7 @@ public class Player{
         }
         return jump_list;
 	}
-	
+
 	public double[] create_grav() {
 		double[] grav_list = new double[0];
 		float x = 9;
@@ -167,7 +167,7 @@ public class Player{
 			}
 		}
 	}
-	
+
 	public void update_collider() {
 		this.collider.rect.x = this.x + 79;
 		this.collider.rect.y = this.y + 43;
