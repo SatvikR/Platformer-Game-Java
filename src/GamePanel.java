@@ -12,16 +12,18 @@ import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
-	public static ArrayList<Block> terrain = new ArrayList<Block>();
-	public static ArrayList<ArrayList<Integer>> starting_points = new ArrayList<>();
+	public static ArrayList<Block> terrain = new ArrayList<>(); // All Blocks
+	public static ArrayList<ArrayList<Integer>> starting_points = new ArrayList<>(); // Starting Points for each level
 	public Player player;
 	private boolean first_render;
 	int playerWidth, playerHeight;
 	Toolkit t = Toolkit.getDefaultToolkit();
 	final String dir = System.getProperty("user.dir");
+
 	Image background = t.getImage(dir + "/../images/background.png");
 	Image middleground = t.getImage(dir + "/../images/middleground.png");
 	Image base_block = t.getImage(dir + "/../images/base_platform.png");
+
 	public Block base = new Block(base_block, 0, 683, new PhysicsCollider(new Rectangle(0, 683, 400, 65)));
 	public Block test_plat = new Block(base_block, 500, 625, new PhysicsCollider(new Rectangle(500, 625, 400, 65)));
 	public static int frame = 0;
@@ -69,12 +71,9 @@ public class GamePanel extends JPanel {
 		
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Consolas", Font.BOLD, 20));
-		// g.drawString("FPS: " + GameLoop.fps, 5, 25);
 		GameLoop.frameCount++;
 	}
-	
-	//private void render_all(Graphics g, Player player2, ArrayList<Block> terrain2) {
-	//}
+
 
 	public void render_all(Graphics g, Player p, ArrayList<Block> blocks) {
 		for (Image i : p.state_imgs.get("idle")) {

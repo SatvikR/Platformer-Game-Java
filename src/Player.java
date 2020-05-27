@@ -32,6 +32,7 @@ public class Player{
 		this.collider = new PhysicsCollider(new Rectangle(this.x + 79, this.y + 45, 87, 138));
 
 		Toolkit t = Toolkit.getDefaultToolkit();
+
 		final String dir = System.getProperty("user.dir");
 		
 		Image idle_one = t.getImage(dir + "/../images/adventurer-idle-00.png");
@@ -84,8 +85,10 @@ public class Player{
 				}
 			}
 		}
+
 		if (this.state == "idle") {
 			boolean touching = false;
+
 			for (Block b : GamePanel.terrain) {
 				if (this.collider.check_lower(b.collider)) {
 					touching = true;
@@ -96,12 +99,14 @@ public class Player{
 					this.orig_y = this.y;
 				}
 			}
+
 			if (this.grav_index == drop_list.length - 1) {
 				this.grav_index = 0;
 				this.x = GamePanel.starting_points.get(0).get(0);
 				this.y = GamePanel.starting_points.get(0).get(1);
 				this.orig_y = this.y;
 			}
+
 			if (!touching) {
 				this.grav_index += 1;
 				this.y += drop_list[this.grav_index];

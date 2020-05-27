@@ -25,8 +25,7 @@ public class GameLoop extends JFrame {
    }
    
    
-   
-   //Starts a new thread and runs the game loop in it.
+
    public void runGameLoop() {
       Thread loop = new Thread() {
          public void run() {
@@ -35,8 +34,7 @@ public class GameLoop extends JFrame {
       };
       loop.start();
    }
-   
-   //Only run this in another Thread!
+
    private void gameLoop() {
 
       final double GAME_HERTZ = 30.0;
@@ -47,12 +45,10 @@ public class GameLoop extends JFrame {
       double lastUpdateTime = System.nanoTime();
 
       double lastRenderTime = System.nanoTime();
-      
-      //If we are able to get as high as this FPS, don't render again.
+
       final double TARGET_FPS = 60;
       final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
-      
-      //Simple way of finding FPS.
+
       int lastSecondTime = (int) (lastUpdateTime / 1000000000);
       
       while (true) {
@@ -72,10 +68,8 @@ public class GameLoop extends JFrame {
         }
      
         drawGame();
-        //Update the frames we got.
         int thisSecond = (int) (lastUpdateTime / 1000000000);
         if (thisSecond > lastSecondTime) {
-           //System.out.println("NEW SECOND " + thisSecond + " " + frameCount);
            fps = frameCount;
            frameCount = 0;
            lastSecondTime = thisSecond;
