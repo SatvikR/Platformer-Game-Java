@@ -24,8 +24,8 @@ public class GamePanel extends JPanel {
 	Image middleground = t.getImage(dir + "/../images/middleground.png");
 	Image base_block = t.getImage(dir + "/../images/base_platform.png");
 
-	public Block base = new Block(base_block, 0, 683, new PhysicsCollider(new Rectangle(0, 683, 400, 65)));
-	public Block test_plat = new Block(base_block, 500, 625, new PhysicsCollider(new Rectangle(500, 625, 400, 65)));
+	public Block base = new Block(base_block, 0, 683, new PhysicsCollider(new Rectangle(0, 687, 400, 55)));
+	public Block test_plat = new Block(base_block, 500, 625, new PhysicsCollider(new Rectangle(500, 629, 400, 55)));
 	public static int frame = 0;
 	
 	public GamePanel() {
@@ -63,11 +63,11 @@ public class GamePanel extends JPanel {
 		for (Block b : terrain) {
 			g.drawImage(b.img, b.x, b.y, this);
 			g.setColor(Color.RED);
-			g.drawRect(b.collider.rect.x, b.collider.rect.y, b.collider.rect.width, b.collider.rect.height);
+			//g.drawRect(b.collider.rect.x, b.collider.rect.y, b.collider.rect.width, b.collider.rect.height);
 		}
 		
 		g.setColor(Color.RED);
-		g.drawRect(player.collider.rect.x, player.collider.rect.y, player.collider.rect.width, player.collider.rect.height);
+		//g.drawRect(player.collider.rect.x, player.collider.rect.y, player.collider.rect.width, player.collider.rect.height);
 		
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Consolas", Font.BOLD, 20));

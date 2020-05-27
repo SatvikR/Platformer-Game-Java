@@ -124,7 +124,7 @@ public class Player{
             jump_list = Arrays.copyOf(jump_list, jump_list.length + 1);
             jump_list[jump_list.length - 1] = y;
             x += 1.0;
-            y = -2 * Math.pow(x, 2) + (36 * x);
+            y = -2 * Math.pow(x, 2) + (45 * x);
         }
         return jump_list;
 	}
